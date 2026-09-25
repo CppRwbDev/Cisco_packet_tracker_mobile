@@ -1,0 +1,8 @@
+//************************************************************************
+//
+//  (c) Copyright Cisco Systems Inc., All Rights Reserved.
+//  All use, disclosure, and/or reproduction of this material is
+//  prohibited unless authorized in writing.
+//
+//************************************************************************
+(function(){var a=window.onerror;window.onerror=function(f,d,b,e,c){if(a){a(f,d,b)}window.AppLogger.error("#######################################################");window.AppLogger.error("######## JAVASCRIPT EXCEPTION - BEGIN ");window.AppLogger.error("### URL:",d,"\tLine:",b,"\tColumn:",e);window.AppLogger.error("### MSG:",f);if(c!=null){window.AppLogger.error("### MSG:",c.stack)}_log_stacktrace("ERROR - ");window.AppLogger.error("######## JAVASCRIPT EXCEPTION - END   ");window.AppLogger.error("#######################################################");window.AppLogger.error("");return true}})();if(!window.HtmlGui){window.HtmlGui={networkContents:{on:function(){console.log("******************************************************************")}}}}Ext.application({requires:["Ext.event.*","Ext.chart.series.ItemPublisher","Ext.fx.Runner","Ext.viewport.Viewport","HtmlGui.util.Logger",],models:[],stores:[],controllers:[],views:[],viewport:{autoMaximize:false},name:"HtmlGui",launch:function(){AppLogger.info("Launching HtmlGui application ... ");HtmlGui.appInstance=this;var a=Ext.create("Ext.Panel",{fullscreen:true,items:[{xtype:"label",centered:true,html:"Cisco Packet Tracer Mobile Placeholder App"}]});Ext.Viewport.add(a);Ext.defer(function(){Ext.Msg.alert("Placeholder","This is a skeleton Cisco Packet Tracer Mobile application created to speed up builds.",Ext.emptyFn)},500,this);AppLogger.info("... ok.")}});

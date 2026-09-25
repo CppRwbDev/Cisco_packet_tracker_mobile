@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PT Mobile — viewport / radial menu diagnostikasi</title>
+<style>
+  body { font: 13px/1.45 monospace; margin: 0; padding: 8px; background: #111; color: #0f0; }
+  h1 { font-size: 15px; margin: 0 0 6px; color: #ff0; }
+  h2 { font-size: 13px; margin: 14px 0 4px; color: #0ff; }
+  table { border-collapse: collapse; width: 100%; }
+  td { border: 1px solid #0a4; padding: 2px 5px; text-align: left; vertical-align: top; }
+  th { border: 1px solid #0a4; padding: 2px 5px; background: #203; color: #fff; text-align: left; }
+  .bad { background: #a00; color: #fff; font-weight: bold; }
+  .ok  { background: #040; }
+  .k { color: #bbb; }
+  #stage { position: relative; border: 2px solid #0ff; background: #222; margin-top: 6px; }
+  #circ { position: absolute; border: 2px solid #f0f; border-radius: 50%; }
+  .btn { position: absolute; border: 1px solid #ff0; background: #640; color: #fff; font-size: 9px; text-align: center; line-height: 1; }
+  #cap { margin-top: 4px; color: #ff0; }
+  pre { background: #000; border: 1px solid #0a4; padding: 6px; overflow: auto; font-size: 12px; color: #0f0; }
+</style>
+</head>
+<body>
+<h1>PT Mobile — viewport &amp; radial (contextual) menu diagnostikasi</h1>
+<div id="out">o&apos;lchov boshlanmoqda…</div>
+
+<h2>1. Ekran o&apos;lchamlari</h2>
+<div id="t1"></div>
+
+<h2>2. BaseButtonCircle.js funksiyalarining shu qurilmadagi natijalari</h2>
+<div id="t2"></div>
+
+<h2>3. CSS media-query chegaralari</h2>
+<div id="t3"></div>
+
+<h2>4. Vizual simulyatsiya</h2>
+<div id="cap"></div>
+<div id="stage"><div id="circ"></div></div>
+
+<h2>5. Xulosa</h2>
+<pre id="verdict">…</pre>
+
+<script>
+function mm(px) { return Math.round(px * 10) / 10; }
+function td(s) { return '<td>' + s + '</td>'; }
+function table(head, rows) {
+  var h = '<table><tr>' + head.map(function (x) { return '<th>' + x + '</th>'; }).join('') + '</tr>';
+  rows.forEach(function (r, i) {
+    var cls = r.cls ? ' class="' + r.cls + '"' : '';
+    var cells = r.c;
+    h += '<tr><td' + cls + '>' + (i + 1) + '</td>' + cells.map(function (c, j) {
+      return j === 0 ? '<td><span class="k">' + c + '</span></td>' : td(c);
+    }).join('') + (r.st ? '<td class="' + r.st + '">' + (r.st === 'bad' ? 'MUAMMO' : 'normal') + '</td>' : '') + '</tr>';
+  });
+  return h + '</table>';
+}
+function put(id, head, rows) { document.getElementById(id).innerHTML = table(head, rows); }
+
+function cmPx(cm) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:absolute;visibility:hidden;width:' + cm + 'cm;height:1px';
+  document.body.appendChild(d);
+  var w = d.getBoundingClientRect().width;
+  document.body.removeChild(d);
+  return Math.round(w * 100) / 100;
+}
+
+var vw = window.innerWidth, vh = window.innerHeight;
+var undefinedInner = (screen.innerWidth === undefined || screen.innerHeight === undefined);
+var px17 = cmPx(17), px20 = cmPx(20), px30 = cmPx(30), px200 = cmPx(200), px1 = cmPx(1);
+
+var r1 = [
+  { c: ['window.innerWidth &times; innerHeight', vw + ' × ' + vh + ' CSS px'] },
+  { c: ['documentElement.clientWidth &times; clientHeight', document.documentElement.clientWidth + ' × ' + document.documentElement.clientHeight + ' CSS px'] },
+  { c: ['screen.width &times; screen.height', screen.width + ' × ' + screen.height + ' device px — konteyner shundan yasaydi'] },
+  { c: ['screen.availWidth &times; availHeight', screen.availWidth + ' × ' + screen.availHeight + ' device px'] },
+  { c: ['screen.innerWidth', String(screen.innerWidth) + ' — <b>base kod shuni ishlatadi</b>'], st: undefinedInner ? 'bad' : 'ok' },
+  { c: ['screen.innerHeight', String(screen.innerHeight) + ' — <b>base kod shuni ishlatadi</b>'], st: undefinedInner ? 'bad' : 'ok' },
+  { c: ['devicePixelRatio', window.devicePixelRatio + ' = device px / CSS px'] },
+  { c: ['orientation', (screen.orientation ? screen.orientation.type + ' / ' + screen.orientation.angle + '°' : String(window.orientation))] },
+  { c: ['visualViewport', window.visualViewport ? (window.visualViewport.width + ' × ' + window.visualViewport.height + ' scale ' + window.visualViewport.scale) : 'mavjud emas (eski WebView)'] },
+  { c: ['CSS 1cm', px1 + ' px (spec: 96/2.54 = 37.795)'] },
+  { c: ['CSS 17cm', '<b>' + px17 + ' px</b> — telefon chegarasi shu qadar'] },
+  { c: ['CSS 20cm', px20 + ' px — WSSceneView zoomsiya chegarasi'] },
+  { c: ['CSS 30cm', px30 + ' px — telefon uchun taklif qilinadigan yangi chegara'] },
+  { c: ['CSS 200cm', px200 + ' px — planshet bazasi (har doim mos keladi)'] }
+];
+put('t1', ['Nomi', 'Qiymat', ''], r1);
+
+var BC = {
+  m_addActionBarAdjustsScreen: false,
+  m_buttonOffsetFromEdge: 0.5,
+  m_buttonTextOnButton: true,
+  minCircleRadPercent: 0.4,
+  maxCircleRadPercent: 0.95,
+  getActionBarOffset: function () { return { x: 0, y: 0 }; },
+  getScreenCenter: function () {
+    var a = { x: 0, y: 0 }, b = this.getActionBarOffset();
+    if (screen.width < screen.innerWidth) { a.x = (screen.innerHeight - b.y) / 2; a.y = (screen.innerWidth - b.x) / 2; }
+    else { a.y = (window.innerHeight - b.y) / 2; a.x = (window.innerWidth - b.x) / 2; }
+    if (this.m_addActionBarAdjustsScreen) { a.y += b.y; a.x += b.x; }
+    return a;
+  },
+  getLargestScreenDim: function () {
+    var a = screen.width;
+    if (a < screen.height) { a = screen.height; }
+    if (a < screen.innerWidth) { a = screen.innerWidth; }
+    if (a < screen.innerHeight) { a = screen.innerHeight; }
+    return a;
+  },
+  getSmallestDim: function () {
+    var a = { x: 0, y: 0, r: 0 };
+    if (screen.width < screen.innerWidth) { a.x = screen.innerHeight / 2; a.y = screen.innerWidth / 2; }
+    else { a.y = window.innerHeight / 2; a.x = window.innerWidth / 2; }
+    if (a.x < a.y) { a.r = a.x; } else { a.r = a.y; }
+    return a.r;
+  },
+  scaleForMediaSize: function () { var a = 1; if (window.matchMedia('(min-width: 0cm) and (max-width: 17cm)').matches) { a = 0.6; } return a; },
+  buttonSizeTextOn: function () { return 70 * this.scaleForMediaSize(); },
+  buttonSizeTextUnder: function () { return 60 * this.scaleForMediaSize(); },
+  setOuterSize: function (a) { this.m_defaultOuter = a * this.scaleForMediaSize(); },
+  getCenter: function (b) { var c = this.getScreenCenter(); return { x: c.x, y: c.y, r: this.getSmallestDim() * b }; },
+  getButtonSize: function () { return this.m_buttonTextOnButton ? this.buttonSizeTextOn() : this.buttonSizeTextUnder(); },
+  getRadNeededForButtonCount: function (f) {
+    var b = this.getCenter(1), e = b.r - (this.getButtonSize() / 2), d = e / b.r;
+    var a = ((f / 4) * this.getButtonSize()) - (this.getButtonSize() / 2);
+    if (a > e) { a = e; }
+    var g = a / b.r; if (g > d) { g = d; } return g;
+  }
+};
+
+BC.setOuterSize(500);
+var scale = BC.scaleForMediaSize();
+var btn = BC.getButtonSize();
+var lsd = BC.getLargestScreenDim();
+var ssd = BC.getSmallestDim();
+var cs = BC.getScreenCenter();
+var cMax = BC.getCenter(BC.maxCircleRadPercent);
+var cMin = BC.getCenter(BC.minCircleRadPercent);
+var need = BC.getRadNeededForButtonCount(8);
+var cNeed = BC.getCenter(need);
+var edgeV = cMax.r + btn / 2, edgeH = cMax.r + btn / 2;
+var overV = edgeV - ssd, overH = edgeH - vw / 2;
+
+var r2 = [
+  { c: ['scaleForMediaSize()', String(scale), scale < 1 ? 'telefon bucketi, 42px' : '17cm (≈' + px17 + 'px) chegarasi bajarilmadi → telefon "planshet" deb hisoblandi, 70px'], st: scale < 1 ? 'ok' : 'bad' },
+  { c: ['getButtonSize() [text ON]', mm(btn) + ' px', 'm_buttonTextOnButton=' + BC.m_buttonTextOnButton] },
+  { c: ['buttonSizeTextUnder()', mm(BC.buttonSizeTextUnder()) + ' px', 'm_buttonTextOnButton=false bo&apos;lsa'] },
+  { c: ['m_defaultOuter (setOuterSize(500))', mm(BC.m_defaultOuter) + ' px', 'shaffof circle_100x100.svg olchami'] },
+  { c: ['getLargestScreenDim()', mm(lsd) + ' px', 'KONTEYNER kvadrati — <b>device px</b>dan olinadi. Viewport esa ' + vw + '×' + vh + ' CSS px. Kontrast: gorizontal ×' + mm(lsd / vw) + ', vertikal ×' + mm(lsd / vh)], st: Math.abs(lsd - vw) > 2 || Math.abs(lsd - vh) > 2 ? 'bad' : 'ok' },
+  { c: ['getSmallestDim()', mm(ssd) + ' px', 'radius moduli = min(w,h)/2 — CSS px'] },
+  { c: ['getScreenCenter()', 'x=' + mm(cs.x) + ', y=' + mm(cs.y), 'CSS px (actionBar=0 deb olindi)'] },
+  { c: ['getCenter(0.95).r', mm(cMax.r) + ' px', 'maksimum radius'] },
+  { c: ['r + btn/2 (VERTIKAL chegara)', mm(edgeV) + ' px', 'chegara ' + mm(ssd) + ' px', overV > 0.5 ? 'CHIQDI +' + mm(overV) + ' px' : 'sig‘adi'], st: overV > 0.5 ? 'bad' : 'ok' },
+  { c: ['r + btn/2 (GORIZONTAL chegara)', mm(edgeH) + ' px', 'chegara ' + mm(vw / 2) + ' px', overH > 0.5 ? 'CHIQDI +' + mm(overH) + ' px' : 'sig‘adi'], st: overH > 0.5 ? 'bad' : 'ok' },
+  { c: ['getCenter(0.4).r', mm(cMin.r) + ' px', 'minimal radius'] },
+  { c: ['getRadNeededForButtonCount(8)', need.toFixed(3), '8 ta tugmali menyu uchun siqilgan ulush'] },
+  { c: ['8 tugma: r + btn/2', mm(cNeed.r + btn / 2) + ' px', 'chegara ' + mm(ssd) + ' px', (cNeed.r + btn / 2) > ssd + 0.5 ? 'CHIQDI' : 'sig‘adi'], st: (cNeed.r + btn / 2) > ssd + 0.5 ? 'bad' : 'ok' }
+];
+put('t2', ['Funksiya', 'Natija', 'Izoh', 'Holat'], r2);
+
+var qs = [
+  ['(min-width: 0cm) and (max-width: 17cm)', 'Basic_contextual_button 42px + scaleForMediaSize() → 0.6'],
+  ['(max-width: 17cm)', 'bitta CSS qoidasi, JS bilan bir xil chegarada'],
+  ['(max-width: 20cm)', 'WSSceneView zoomsiya chegarasi'],
+  ['(max-width: 30cm)', 'YANGI chegara — telefon landscape uchun taklif'],
+  ['(max-width: 640px)', 'CSS px&apos;ga o&apos;tkazilgan chegara'],
+  ['(max-width: 1134px)', '30cm ≈ 1134 px'],
+  ['(max-width: 200cm)', 'planshet bazasi — har doim mos keladi']
+];
+var r3 = qs.map(function (q) { return { c: [q[0], window.matchMedia(q[0]).matches ? 'MOS KELADI' : 'mos kelmaydi', q[1]], st: window.matchMedia(q[0]).matches ? 'ok' : 'bad' }; });
+put('t3', ['Query', 'Natija', 'Nima beradi', 'Holat'], r3);
+
+var k = 0.55, stage = document.getElementById('stage');
+stage.style.width = mm(vw * k) + 'px';
+stage.style.height = mm(vh * k) + 'px';
+var circ = document.getElementById('circ');
+circ.style.left = mm((cs.x - cMax.r) * k) + 'px';
+circ.style.top = mm((cs.y - cMax.r) * k) + 'px';
+circ.style.width = mm(cMax.r * 2 * k) + 'px';
+circ.style.height = mm(cMax.r * 2 * k) + 'px';
+var n = 8, g = (2 * Math.PI) / n, e = btn / 2, dd = cMax.r - e / 3;
+for (var i = 0; i < n; i++) {
+  var el = document.createElement('div');
+  el.className = 'btn';
+  el.textContent = (i + 1);
+  el.style.width = mm(btn * k) + 'px';
+  el.style.height = mm(btn * k) + 'px';
+  el.style.left = mm((cs.x + dd * Math.sin(g * i) - e) * k) + 'px';
+  el.style.top = mm((cs.y - dd * Math.cos(g * i) - e) * k) + 'px';
+  stage.appendChild(el);
+}
+document.getElementById('cap').innerHTML =
+  'Qizil doir = radius <b>' + mm(cMax.r) + ' px</b> (getCenter(0.95)) · sariq kataklar = 8 tugma (<b>' + mm(btn) + ' px</b>) · ' +
+  'stage = viewport ' + vw + '×' + vh + ' px (×' + k + '). ' +
+  '<b>' + (overV > 0.5 ? '&#9650; ' + mm(overV) + ' px VERTIKAL CHIQIB KETDI' : (overH > 0.5 ? '&#9650; ' + mm(overH) + ' px GORIZONTAL CHIQIB KETDI' : 'chegara ichida')) + '</b>';
+
+var v = [];
+v.push('Qurilma: viewport ' + vw + '×' + vh + ' CSS px | screen ' + screen.width + '×' + screen.height + ' device px | DPR ' + window.devicePixelRatio);
+v.push('');
+v.push('A. TELEFON BUCKETING — scaleForMediaSize() = ' + scale);
+v.push('   ' + (scale === 1
+  ? '>> 17cm (≈' + px17 + ' px) chegarasi bajarilmadi. Telefon "planshet" deb hisoblandi → 70px tugma, 500px konteyner.'
+  : '>> 17cm (≈' + px17 + ' px) chegarasi bajarildi → 0.6 masshtab, 42px tugma.'));
+v.push('B. KONTEYNER — getLargestScreenDim() = ' + mm(lsd) + ' px, viewport esa ' + vw + '×' + vh + ' CSS px');
+v.push('   ' + (Math.abs(lsd - vw) > 2 || Math.abs(lsd - vh) > 2
+  ? '>> device px va CSS px aralashib ketgan (×' + mm(lsd / Math.max(vw, vh)) + '). centered konteyner viewportga sig‘maydi → markaz buziladi.'
+  : '>> mos keladi.'));
+v.push('C. RADIUS — getCenter(0.95).r = ' + mm(cMax.r) + ' px, r + btn/2 = ' + mm(edgeV) + ' px, chegara = ' + mm(ssd) + ' px');
+v.push('   ' + (overV > 0.5 ? '>> ' + mm(overV) + ' px VERTIKAL CHIQIB KETDI' : '>> sig‘adi'));
+v.push('D. UNDEFINED — screen.innerWidth=' + screen.innerWidth + ', screen.innerHeight=' + screen.innerHeight);
+v.push('   ' + (undefinedInner
+  ? '>> shart `screen.width < screen.innerWidth` doim false → else tarmoq ishlaydi (tasodif). Boshqa WebView muhitida o‘qlar SWAP bo‘ladi → geometiya butunlay noto‘g‘ri.'
+  : '>> mavjud → x/y o‘qlari SWAP bo‘ladi, geometriya noto‘g‘ri.'));
+v.push('E. VIEWPORT META — ' + (document.querySelector('meta[name=viewport]') ? 'bor' : 'app.html da YO‘Q'));
+v.push('   >> yo‘q bo‘lsa CSS px/dp nisbati faqat DPR ga bog‘liq; matchMedia natijasi qurilmadan qurilmaga o‘zgaradi.');
+v.push('');
+v.push('TUZATISH TARTIBI (o‘lchovga qarab):');
+v.push('  1) app.html: <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">');
+v.push('  2) getLargestScreenDim(): screen.* → Math.max(window.innerWidth, window.innerHeight)');
+v.push('  3) getSmallestDim(): screen.innerWidth/innerHeight → window.innerWidth/innerHeight, shartni olib tashlash');
+v.push('  4) scaleForMediaSize(): 17cm (≈' + px17 + 'px) → 30cm (≈' + px30 + 'px), yoki CSS px bilan, va min(w,h) ga qarab ikki bosqichli');
+v.push('  5) getCenter(): r = Math.min(getSmallestDim()*pct, getSmallestDim() - getButtonSize())  →  r + btn/2 ≤ min(w,h)/2');
+document.getElementById('verdict').textContent = v.join('\n');
+document.getElementById('out').innerHTML = 'Tayyor. Jadval 1: ekran o&apos;lchamlari · Jadval 2: base kod natijalari · Jadval 3: media-query · 4-blok: vizual · 5: xulosa';
+</script>
+</body>
+</html>

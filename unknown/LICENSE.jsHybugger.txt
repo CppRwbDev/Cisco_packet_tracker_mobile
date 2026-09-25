@@ -1,0 +1,224 @@
+License agreement
+
+   Please read this agreement carefully. This agreement has been made
+   available to you on the jsHybugger website (http://www.jsHybugger.com)
+   prior to your purchase of a jsHybugger license certificate or prior to
+   installation of the jsHybugger software. By purchasing a license or by
+   installing the software on your computer/device, you have agreed that
+   this agreement is enforceable like any written contract signed by you.
+     * DEFINITIONS
+         1. "jsHybugger software"
+            The software program distributed by the Licensor under the
+            name jsHybugger, as produced by the Licensor, including its
+            documentation, related explanatory materials in printed,
+            electronic, or online form, and upgrades, modified or
+            subsequent versions and updates of the software.
+         2. "to use the jsHybugger software"
+            To store, load, install, execute and/or display (to "use") the
+            jsHybugger software.
+         3. "Licensor"
+            Wolfgang Flohr-Hochbichler, IT Consulting & Development,
+            Landsberger Str. 71, 86938 Schondorf, GERMANY
+         4. "Licensee"
+            You, the end user of the jsHybugger software; a natural or a
+            legal person or entity. The legal identity of the Licensee may
+            change due to a merger, acquisition or other types of
+            succession.
+         5. "License"
+            The license to use the jsHybugger software, as granted to the
+            Licensee in section III ("Grant of license").
+         6. "jsHybugger website"
+            The public website run by the Licensor serving online licenses
+            for jsHybugger software. Refer to the general website of the
+            Licensor for address and specific details.
+         7. "License key"
+            A unique key-code that enables an Authorized User to use the
+            jsHybugger software. Only Licensor and/or its representatives
+            are permitted to produce License Keys for the jsHybugger
+            software.
+         8. "License certificate"
+            Evidence of a License provided by Licensor to Licensee in
+            electronic or printed form.
+         9. "Single license"
+            A Single license is a named-user License which restricts the
+            use of the software to the person who purchased that License.
+            The License allows for installation of the software on
+            different computers (at work and/or at home), provided that
+            multiple instances of the software will not be used at the
+            same time.
+        10. "Team/Site license"
+            Team and Site licenses that are registered in a legal entity
+            name allow for use of the software on any computer, operating
+            system, and by any individual within a legal entity, provided
+            that the total number of concurrent users never exceeds the
+            number of seats (units) specified.
+        11. "Agreement"
+            This end-user license agreement, the current document.
+        12. "Authorized user(s)"
+            A natural person or persons that are granted the License to
+            use the jsHybugger software according to section III ("Grant
+            of License").
+     * INTELLECTUAL PROPERTY RIGHTS
+         1. Ownership
+            The jsHybugger software is the property of Licensor. Title and
+            copyrights to the jsHybugger software, in whole or in part,
+            and all copies thereof, and all modifications, enhancements,
+            derivatives and other alterations of the software, regardless
+            of who made them, if any, are, and will remain, the sole and
+            exclusive property of the Licensor.
+         2. Third party software
+            Some third party software included in the jsHybugger software
+            may be subject to other terms and conditions. These terms and
+            conditions are available in the separate file
+            "LICENSE.3rd-party.txt" included in the jsHybugger
+            distributions, and directly from the web sites of the
+            corresponding vendors.
+         3. No removal of notices
+            The Licensee agrees that he will not remove, obscure, make
+            illegible or alter any notices or indications of the IP Rights
+            and/or Licensor's rights and ownership thereof, whether such
+            notice or indications are affixed on, contained in or
+            otherwise connected to any materials.
+         4. No hacking
+            The Licensee is not allowed to undertake, cause, permit or
+            authorize the modification, creation of derivative works,
+            translation, reverse engineering, decompiling, disassembling
+            or hacking of the jsHybugger software or any part thereof
+            except to the extent permitted by law.
+         5. No redistribution
+            The Licensee is not allowed to sell, assign, rent, lease,
+            distribute, export, import, act as an intermediary or
+            provider, or otherwise grant rights to third parties with
+            regard to the jsHybugger software.
+     * GRANT OF LICENSE
+         1. Licensee and authorized users
+            Each of the following License grants are valid for the
+            specified Authorized User(s). If the Licensee is a legal
+            person, the Licensee itself is just a party of this Agreement.
+            The natural person(s) authorized to use the jsHybugger
+            software is/are the particular natural person(s) who is/are
+            defined below as the Authorized User(s).
+         2. Single license
+            Licensor hereby grants the Authorized users of a Licensee who
+            is holding a valid license certificate of type "jsHybugger
+            Single license", a non-exclusive, non-sublicensable,
+            non-assignable, time-limited license to use the jsHybugger
+            software according to the terms and conditions of this
+            Agreement and the Licensee accepts this Single license by
+            purchasing the License certificate.
+            A Single license is property of an individual who have
+            purchased it using his/her own funds, and of legal entities,
+            including companies and organizations (both for-profit and
+            non-profit), requiring the software for general commercial use
+            by an individual within that entity. Transfer of Single
+            licenses to any third party is prohibited by the jsHybugger
+            License agreement. The License is granted only for the time
+            period specified in the License certificate.
+         3. Team/Site license
+            Licensor hereby grants the Authorized users of a Licensee who
+            is holding a valid license certificate of type "jsHybugger
+            Team license" or "jsHybugger Site license" or, a
+            non-exclusive, non-sublicensable, non-assignable, time-limited
+            license to use the the jsHybugger software according to the
+            terms and conditions of this Agreement. The Licensee accepts
+            this License by purchasing the license certificate.
+            The Authorized users are any indivdiual within the Licensee
+            entity, with the restriction that the number of concurrent
+            ("floating") users can not exceed the number of allowed
+            concurrent users (units) as specified by the License
+            certificate held by the Licensee. The License is granted only
+            for the time period specified in the license certificate.
+         4. Upgrades
+            The Licensee can upgrade to a newer version at any time, if
+            not stated otherwise in the Agreement attached to the new
+            version of the jsHybugger software. By upgrading to a newer
+            version, the Licensee accepts the terms and conditions of the
+            Agreement attached to the newer version if the Agreement has
+            changed between the two versions of the jsHybugger Software.
+         5. Unauthorized usage
+            The usage of jsHybugger software is allowed only on basis of a
+            License of any type granted to the Authorized Users above. If
+            in any circumstances should an Authorized User or any third
+            person discover or create a way to use the jsHybugger
+            software, with or without a License key, beyond the scope of
+            the License granted to him, this by no means indicates that
+            this use of jsHybugger software is allowed.
+            The jsHybugger software must not be integrated in or used as
+            part of services that are provided to any individuals or legal
+            entities who are not Licensees (e.g. Software as a Service
+            [SaaS], cloud services).
+     * DISCLAIMER OF WARRANTY AND LIMITATION OF LIABILITY
+         1. Disclaimer of warranty
+            Subject to any statutory warranties which cannot be excluded,
+            the Licensor makes no warranties or conditions either express
+            or implied, including but not limited to, the implied
+            warranties or conditions of merchantability, fitness for a
+            particular purpose, and non-infringement, regarding the
+            jsHybugger software. Although the Licensor will make
+            reasonable efforts to fix errors in jsHybugger software, the
+            Licensee acknowledges and accepts that the jsHybugger software
+            is provided "as is".
+         2. Limitation of liability
+            TO THE EXTENT NOT PROHIBITED BY LAW, IN NO EVENT WILL LICENSOR
+            BE LIABLE FOR ANY LOST REVENUE, PROFIT OR DATA, OR FOR
+            SPECIAL, INDIRECT, CONSEQUENTIAL, INCIDENTAL OR PUNITIVE
+            DAMAGES, HOWEVER CAUSED REGARDLESS OF THE THEORY OF LIABILITY,
+            ARISING OUT OF OR RELATED TO THE USE OF OR INABILITY TO USE
+            JSHYBUGGER SOFTWARE, EVEN IF LICENSOR HAS BEEN ADVISED OF THE
+            POSSIBILITY OF SUCH DAMAGES.
+         3. Liquidated damages
+            In no event will Licensor's liability to the Licensee, whether
+            in contract, tort (including negligence), or otherwise, exceed
+            the amount paid by the Licensee for the jsHybugger software.
+            The foregoing limitations will apply even if the above stated
+            warranty fails of its essential purpose.
+     * CUSTOMER SUPPORT
+       For a Licensee holding a valid License Certificate, support will be
+       available during the period of validity of Licensee's License
+       certificate as follows: For holders of a paid License certificate
+       of any type, email support is guaranteed to be available at least
+       during the period of 365 days from the purchase of the License
+       certificate. The response time will be reasonable, but no specific
+       response time guarantees are given.
+       Any guarantees of support availability only apply to the latest
+       version of jsHybugger software. The Licensee is allowed to upgrade
+       to the latest version as specified by this Agreement.
+     * GENERAL TERMS
+         1. Alteration of terms
+            Licensor will reserve itself a right to change the terms of
+            the current Agreement at any moment by making the new revision
+            of this Agreement available on Licensor's website and
+            including it in the future releases of the jsHybugger
+            software.
+               o By updating the jsHybugger software to a newer version
+                 that includes the new revision of this Agreement, the
+                 Licensee agrees to the new revision of this Agreement.
+               o By purchasing or otherwise receiving and accepting a new
+                 License certificate, or otherwise extending the period of
+                 use of the jsHybugger software, the Licensee agrees to
+                 the latest revision of this Agreement available at that
+                 moment on Licensor's web site.
+         2. Termination of the agreement
+               o This Agreement is effective until terminated.
+               o Expiration or nonexistence of the License does not
+                 terminate the Agreement. The termination of the Agreement
+                 also terminates any License given in this Agreement.
+               o This Agreement will terminate immediately without notice
+                 from Licensor if the Licensee fails to comply with any
+                 provision of this Agreement.
+               o The Licensee may terminate this Agreement at any time by
+                 destroying all copies of the jsHybugger software and
+                 notifying Licensor by email.
+               o Upon termination of the Agreement, the Licensee must
+                 destroy all copies of the jsHybugger software.
+               o Upon termination of this Agreement, all terms in sections
+                 "Intellectual Property Rights" (section II), "Disclaimer
+                 of Warranty and Limitation of Liability" (section IV),
+                 "General terms" (section VI) and other terms that should
+                 survive due to their nature will continue to be
+                 effective.
+               o Licensee agrees that upon termination of this agreement
+                 for any reason, Licensor may take actions so that the
+                 jsHybugger Software no longer operates.
+
+   Date: 2014-02-03

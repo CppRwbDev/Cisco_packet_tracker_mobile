@@ -1,0 +1,1031 @@
+.class Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;
+.super Ljava/lang/Object;
+.source "ResponseProtocolCompliance.java"
+
+
+# annotations
+.annotation build Lorg/apache/http/annotation/Immutable;
+.end annotation
+
+
+# static fields
+.field private static final UNEXPECTED_100_CONTINUE:Ljava/lang/String; = "The incoming request did not contain a 100-continue header, but the response was a Status 100, continue."
+
+.field private static final UNEXPECTED_PARTIAL_CONTENT:Ljava/lang/String; = "partial content was returned for a request that did not ask for it"
+
+
+# direct methods
+.method constructor <init>()V
+    .registers 1
+
+    .prologue
+    .line 57
+    invoke-direct {p0}, Ljava/lang/Object;-><init>()V
+
+    return-void
+.end method
+
+.method private backendResponseMustNotHaveBody(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)Z
+    .registers 5
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "backendResponse"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 210
+    const-string v0, "HEAD"
+
+    invoke-interface {p1}, Lorg/apache/http/HttpRequest;->getRequestLine()Lorg/apache/http/RequestLine;
+
+    move-result-object v1
+
+    invoke-interface {v1}, Lorg/apache/http/RequestLine;->getMethod()Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-virtual {v0, v1}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v0
+
+    if-nez v0, :cond_34
+
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v0
+
+    const/16 v1, 0xcc
+
+    if-eq v0, v1, :cond_34
+
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v0
+
+    const/16 v1, 0xcd
+
+    if-eq v0, v1, :cond_34
+
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v0
+
+    const/16 v1, 0x130
+
+    if-ne v0, v1, :cond_36
+
+    :cond_34
+    const/4 v0, 0x1
+
+    :goto_35
+    return v0
+
+    :cond_36
+    const/4 v0, 0x0
+
+    goto :goto_35
+.end method
+
+.method private consumeBody(Lorg/apache/http/HttpResponse;)V
+    .registers 3
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+    .annotation system Ldalvik/annotation/Throws;
+        value = {
+            Ljava/io/IOException;
+        }
+    .end annotation
+
+    .prologue
+    .line 97
+    invoke-interface {p1}, Lorg/apache/http/HttpResponse;->getEntity()Lorg/apache/http/HttpEntity;
+
+    move-result-object v0
+
+    .line 98
+    .local v0, "body":Lorg/apache/http/HttpEntity;
+    if-eqz v0, :cond_9
+
+    invoke-static {v0}, Lorg/apache/http/util/EntityUtils;->consume(Lorg/apache/http/HttpEntity;)V
+
+    .line 99
+    :cond_9
+    return-void
+.end method
+
+.method private ensure200ForOPTIONSRequestWithNoBodyHasContentLengthZero(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+    .registers 5
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 184
+    invoke-interface {p1}, Lorg/apache/http/HttpRequest;->getRequestLine()Lorg/apache/http/RequestLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/RequestLine;->getMethod()Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, "OPTIONS"
+
+    invoke-virtual {v0, v1}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+
+    move-result v0
+
+    if-nez v0, :cond_11
+
+    .line 195
+    :cond_10
+    :goto_10
+    return-void
+
+    .line 188
+    :cond_11
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v0
+
+    const/16 v1, 0xc8
+
+    if-ne v0, v1, :cond_10
+
+    .line 192
+    const-string v0, "Content-Length"
+
+    invoke-interface {p2, v0}, Lorg/apache/http/HttpResponse;->getFirstHeader(Ljava/lang/String;)Lorg/apache/http/Header;
+
+    move-result-object v0
+
+    if-nez v0, :cond_10
+
+    .line 193
+    const-string v0, "Content-Length"
+
+    const-string v1, "0"
+
+    invoke-interface {p2, v0, v1}, Lorg/apache/http/HttpResponse;->addHeader(Ljava/lang/String;Ljava/lang/String;)V
+
+    goto :goto_10
+.end method
+
+.method private ensure206ContainsDateHeader(Lorg/apache/http/HttpResponse;)V
+    .registers 4
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 166
+    const-string v0, "Date"
+
+    invoke-interface {p1, v0}, Lorg/apache/http/HttpResponse;->getFirstHeader(Ljava/lang/String;)Lorg/apache/http/Header;
+
+    move-result-object v0
+
+    if-nez v0, :cond_16
+
+    .line 167
+    const-string v0, "Date"
+
+    new-instance v1, Ljava/util/Date;
+
+    invoke-direct {v1}, Ljava/util/Date;-><init>()V
+
+    invoke-static {v1}, Lorg/apache/http/impl/cookie/DateUtils;->formatDate(Ljava/util/Date;)Ljava/lang/String;
+
+    move-result-object v1
+
+    invoke-interface {p1, v0, v1}, Lorg/apache/http/HttpResponse;->addHeader(Ljava/lang/String;Ljava/lang/String;)V
+
+    .line 170
+    :cond_16
+    return-void
+.end method
+
+.method private ensure304DoesNotContainExtraEntityHeaders(Lorg/apache/http/HttpResponse;)V
+    .registers 9
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 198
+    const/16 v5, 0x8
+
+    new-array v1, v5, [Ljava/lang/String;
+
+    const/4 v5, 0x0
+
+    const-string v6, "Allow"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x1
+
+    const-string v6, "Content-Encoding"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x2
+
+    const-string v6, "Content-Language"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x3
+
+    const-string v6, "Content-Length"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x4
+
+    const-string v6, "Content-MD5"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x5
+
+    const-string v6, "Content-Range"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x6
+
+    const-string v6, "Content-Type"
+
+    aput-object v6, v1, v5
+
+    const/4 v5, 0x7
+
+    const-string v6, "Last-Modified"
+
+    aput-object v6, v1, v5
+
+    .line 202
+    .local v1, "disallowedEntityHeaders":[Ljava/lang/String;
+    invoke-interface {p1}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v5
+
+    invoke-interface {v5}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v5
+
+    const/16 v6, 0x130
+
+    if-ne v5, v6, :cond_45
+
+    .line 203
+    move-object v0, v1
+
+    .local v0, "arr$":[Ljava/lang/String;
+    array-length v4, v0
+
+    .local v4, "len$":I
+    const/4 v3, 0x0
+
+    .local v3, "i$":I
+    :goto_3b
+    if-ge v3, v4, :cond_45
+
+    aget-object v2, v0, v3
+
+    .line 204
+    .local v2, "hdr":Ljava/lang/String;
+    invoke-interface {p1, v2}, Lorg/apache/http/HttpResponse;->removeHeaders(Ljava/lang/String;)V
+
+    .line 203
+    add-int/lit8 v3, v3, 0x1
+
+    goto :goto_3b
+
+    .line 207
+    .end local v0    # "arr$":[Ljava/lang/String;
+    .end local v2    # "hdr":Ljava/lang/String;
+    .end local v3    # "i$":I
+    .end local v4    # "len$":I
+    :cond_45
+    return-void
+.end method
+
+.method private ensurePartialContentIsNotSentToAClientThatDidNotRequestIt(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+    .registers 5
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "response"    # Lorg/apache/http/HttpResponse;
+    .annotation system Ldalvik/annotation/Throws;
+        value = {
+            Ljava/io/IOException;
+        }
+    .end annotation
+
+    .prologue
+    .line 174
+    const-string v0, "Range"
+
+    invoke-interface {p1, v0}, Lorg/apache/http/HttpRequest;->getFirstHeader(Ljava/lang/String;)Lorg/apache/http/Header;
+
+    move-result-object v0
+
+    if-nez v0, :cond_14
+
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v0
+
+    const/16 v1, 0xce
+
+    if-eq v0, v1, :cond_15
+
+    .line 176
+    :cond_14
+    return-void
+
+    .line 178
+    :cond_15
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->consumeBody(Lorg/apache/http/HttpResponse;)V
+
+    .line 179
+    new-instance v0, Lorg/apache/http/client/ClientProtocolException;
+
+    const-string v1, "partial content was returned for a request that did not ask for it"
+
+    invoke-direct {v0, v1}, Lorg/apache/http/client/ClientProtocolException;-><init>(Ljava/lang/String;)V
+
+    throw v0
+.end method
+
+.method private getOriginalRequestProtocol(Lorg/apache/http/impl/client/RequestWrapper;)Lorg/apache/http/ProtocolVersion;
+    .registers 3
+    .param p1, "request"    # Lorg/apache/http/impl/client/RequestWrapper;
+
+    .prologue
+    .line 251
+    invoke-virtual {p1}, Lorg/apache/http/impl/client/RequestWrapper;->getOriginal()Lorg/apache/http/HttpRequest;
+
+    move-result-object v0
+
+    invoke-interface {v0}, Lorg/apache/http/HttpRequest;->getProtocolVersion()Lorg/apache/http/ProtocolVersion;
+
+    move-result-object v0
+
+    return-object v0
+.end method
+
+.method private identityIsNotUsedInContentEncoding(Lorg/apache/http/HttpResponse;)V
+    .registers 19
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 137
+    const-string v15, "Content-Encoding"
+
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v15}, Lorg/apache/http/HttpResponse;->getHeaders(Ljava/lang/String;)[Lorg/apache/http/Header;
+
+    move-result-object v7
+
+    .line 138
+    .local v7, "hdrs":[Lorg/apache/http/Header;
+    if-eqz v7, :cond_d
+
+    array-length v15, v7
+
+    if-nez v15, :cond_e
+
+    .line 163
+    :cond_d
+    return-void
+
+    .line 139
+    :cond_e
+    new-instance v14, Ljava/util/ArrayList;
+
+    invoke-direct {v14}, Ljava/util/ArrayList;-><init>()V
+
+    .line 140
+    .local v14, "newHeaders":Ljava/util/List;, "Ljava/util/List<Lorg/apache/http/Header;>;"
+    const/4 v12, 0x0
+
+    .line 141
+    .local v12, "modified":Z
+    move-object v1, v7
+
+    .local v1, "arr$":[Lorg/apache/http/Header;
+    array-length v10, v1
+
+    .local v10, "len$":I
+    const/4 v8, 0x0
+
+    .local v8, "i$":I
+    move v9, v8
+
+    .end local v1    # "arr$":[Lorg/apache/http/Header;
+    .end local v8    # "i$":I
+    .end local v10    # "len$":I
+    .local v9, "i$":I
+    :goto_18
+    if-ge v9, v10, :cond_68
+
+    aget-object v6, v1, v9
+
+    .line 142
+    .local v6, "h":Lorg/apache/http/Header;
+    new-instance v3, Ljava/lang/StringBuilder;
+
+    invoke-direct {v3}, Ljava/lang/StringBuilder;-><init>()V
+
+    .line 143
+    .local v3, "buf":Ljava/lang/StringBuilder;
+    const/4 v5, 0x1
+
+    .line 144
+    .local v5, "first":Z
+    invoke-interface {v6}, Lorg/apache/http/Header;->getElements()[Lorg/apache/http/HeaderElement;
+
+    move-result-object v2
+
+    .local v2, "arr$":[Lorg/apache/http/HeaderElement;
+    array-length v11, v2
+
+    .local v11, "len$":I
+    const/4 v8, 0x0
+
+    .end local v9    # "i$":I
+    .restart local v8    # "i$":I
+    :goto_28
+    if-ge v8, v11, :cond_4c
+
+    aget-object v4, v2, v8
+
+    .line 145
+    .local v4, "elt":Lorg/apache/http/HeaderElement;
+    const-string v15, "identity"
+
+    invoke-interface {v4}, Lorg/apache/http/HeaderElement;->getName()Ljava/lang/String;
+
+    move-result-object v16
+
+    invoke-virtual/range {v15 .. v16}, Ljava/lang/String;->equalsIgnoreCase(Ljava/lang/String;)Z
+
+    move-result v15
+
+    if-eqz v15, :cond_3c
+
+    .line 146
+    const/4 v12, 0x1
+
+    .line 144
+    :goto_39
+    add-int/lit8 v8, v8, 0x1
+
+    goto :goto_28
+
+    .line 148
+    :cond_3c
+    if-nez v5, :cond_43
+
+    const-string v15, ","
+
+    invoke-virtual {v3, v15}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    .line 149
+    :cond_43
+    invoke-virtual {v4}, Ljava/lang/Object;->toString()Ljava/lang/String;
+
+    move-result-object v15
+
+    invoke-virtual {v3, v15}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    .line 150
+    const/4 v5, 0x0
+
+    goto :goto_39
+
+    .line 153
+    .end local v4    # "elt":Lorg/apache/http/HeaderElement;
+    :cond_4c
+    invoke-virtual {v3}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v13
+
+    .line 154
+    .local v13, "newHeaderValue":Ljava/lang/String;
+    const-string v15, ""
+
+    invoke-virtual {v15, v13}, Ljava/lang/String;->equals(Ljava/lang/Object;)Z
+
+    move-result v15
+
+    if-nez v15, :cond_64
+
+    .line 155
+    new-instance v15, Lorg/apache/http/message/BasicHeader;
+
+    const-string v16, "Content-Encoding"
+
+    move-object/from16 v0, v16
+
+    invoke-direct {v15, v0, v13}, Lorg/apache/http/message/BasicHeader;-><init>(Ljava/lang/String;Ljava/lang/String;)V
+
+    invoke-interface {v14, v15}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 141
+    :cond_64
+    add-int/lit8 v8, v9, 0x1
+
+    move v9, v8
+
+    .end local v8    # "i$":I
+    .restart local v9    # "i$":I
+    goto :goto_18
+
+    .line 158
+    .end local v2    # "arr$":[Lorg/apache/http/HeaderElement;
+    .end local v3    # "buf":Ljava/lang/StringBuilder;
+    .end local v5    # "first":Z
+    .end local v6    # "h":Lorg/apache/http/Header;
+    .end local v11    # "len$":I
+    .end local v13    # "newHeaderValue":Ljava/lang/String;
+    :cond_68
+    if-eqz v12, :cond_d
+
+    .line 159
+    const-string v15, "Content-Encoding"
+
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v15}, Lorg/apache/http/HttpResponse;->removeHeaders(Ljava/lang/String;)V
+
+    .line 160
+    invoke-interface {v14}, Ljava/util/List;->iterator()Ljava/util/Iterator;
+
+    move-result-object v8
+
+    .end local v9    # "i$":I
+    .local v8, "i$":Ljava/util/Iterator;
+    :goto_75
+    invoke-interface {v8}, Ljava/util/Iterator;->hasNext()Z
+
+    move-result v15
+
+    if-eqz v15, :cond_d
+
+    invoke-interface {v8}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v6
+
+    check-cast v6, Lorg/apache/http/Header;
+
+    .line 161
+    .restart local v6    # "h":Lorg/apache/http/Header;
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v6}, Lorg/apache/http/HttpResponse;->addHeader(Lorg/apache/http/Header;)V
+
+    goto :goto_75
+.end method
+
+.method private removeResponseTransferEncoding(Lorg/apache/http/HttpResponse;)V
+    .registers 3
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 246
+    const-string v0, "TE"
+
+    invoke-interface {p1, v0}, Lorg/apache/http/HttpResponse;->removeHeaders(Ljava/lang/String;)V
+
+    .line 247
+    const-string v0, "Transfer-Encoding"
+
+    invoke-interface {p1, v0}, Lorg/apache/http/HttpResponse;->removeHeaders(Ljava/lang/String;)V
+
+    .line 248
+    return-void
+.end method
+
+.method private requestDidNotExpect100ContinueButResponseIsOne(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+    .registers 6
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "response"    # Lorg/apache/http/HttpResponse;
+    .annotation system Ldalvik/annotation/Throws;
+        value = {
+            Ljava/io/IOException;
+        }
+    .end annotation
+
+    .prologue
+    .line 218
+    invoke-interface {p2}, Lorg/apache/http/HttpResponse;->getStatusLine()Lorg/apache/http/StatusLine;
+
+    move-result-object v1
+
+    invoke-interface {v1}, Lorg/apache/http/StatusLine;->getStatusCode()I
+
+    move-result v1
+
+    const/16 v2, 0x64
+
+    if-eq v1, v2, :cond_d
+
+    .line 225
+    .end local p1    # "request":Lorg/apache/http/HttpRequest;
+    :cond_c
+    return-void
+
+    .line 222
+    .restart local p1    # "request":Lorg/apache/http/HttpRequest;
+    :cond_d
+    invoke-direct {p0, p1}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->requestWasWrapped(Lorg/apache/http/HttpRequest;)Z
+
+    move-result v1
+
+    if-eqz v1, :cond_30
+
+    check-cast p1, Lorg/apache/http/impl/client/RequestWrapper;
+
+    .end local p1    # "request":Lorg/apache/http/HttpRequest;
+    invoke-virtual {p1}, Lorg/apache/http/impl/client/RequestWrapper;->getOriginal()Lorg/apache/http/HttpRequest;
+
+    move-result-object v0
+
+    .line 224
+    .local v0, "originalRequest":Lorg/apache/http/HttpRequest;
+    :goto_19
+    instance-of v1, v0, Lorg/apache/http/HttpEntityEnclosingRequest;
+
+    if-eqz v1, :cond_25
+
+    .line 225
+    check-cast v0, Lorg/apache/http/HttpEntityEnclosingRequest;
+
+    .end local v0    # "originalRequest":Lorg/apache/http/HttpRequest;
+    invoke-interface {v0}, Lorg/apache/http/HttpEntityEnclosingRequest;->expectContinue()Z
+
+    move-result v1
+
+    if-nez v1, :cond_c
+
+    .line 227
+    :cond_25
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->consumeBody(Lorg/apache/http/HttpResponse;)V
+
+    .line 228
+    new-instance v1, Lorg/apache/http/client/ClientProtocolException;
+
+    const-string v2, "The incoming request did not contain a 100-continue header, but the response was a Status 100, continue."
+
+    invoke-direct {v1, v2}, Lorg/apache/http/client/ClientProtocolException;-><init>(Ljava/lang/String;)V
+
+    throw v1
+
+    .restart local p1    # "request":Lorg/apache/http/HttpRequest;
+    :cond_30
+    move-object v0, p1
+
+    .line 222
+    goto :goto_19
+.end method
+
+.method private requestWasWrapped(Lorg/apache/http/HttpRequest;)Z
+    .registers 3
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+
+    .prologue
+    .line 255
+    instance-of v0, p1, Lorg/apache/http/impl/client/RequestWrapper;
+
+    return v0
+.end method
+
+.method private transferEncodingIsNotReturnedTo1_0Client(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+    .registers 5
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 232
+    invoke-direct {p0, p1}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->requestWasWrapped(Lorg/apache/http/HttpRequest;)Z
+
+    move-result v1
+
+    if-nez v1, :cond_7
+
+    .line 243
+    .end local p1    # "request":Lorg/apache/http/HttpRequest;
+    :cond_6
+    :goto_6
+    return-void
+
+    .line 236
+    .restart local p1    # "request":Lorg/apache/http/HttpRequest;
+    :cond_7
+    check-cast p1, Lorg/apache/http/impl/client/RequestWrapper;
+
+    .end local p1    # "request":Lorg/apache/http/HttpRequest;
+    invoke-direct {p0, p1}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->getOriginalRequestProtocol(Lorg/apache/http/impl/client/RequestWrapper;)Lorg/apache/http/ProtocolVersion;
+
+    move-result-object v0
+
+    .line 238
+    .local v0, "originalProtocol":Lorg/apache/http/ProtocolVersion;
+    sget-object v1, Lorg/apache/http/HttpVersion;->HTTP_1_1:Lorg/apache/http/HttpVersion;
+
+    invoke-virtual {v0, v1}, Lorg/apache/http/ProtocolVersion;->compareToVersion(Lorg/apache/http/ProtocolVersion;)I
+
+    move-result v1
+
+    if-gez v1, :cond_6
+
+    .line 242
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->removeResponseTransferEncoding(Lorg/apache/http/HttpResponse;)V
+
+    goto :goto_6
+.end method
+
+.method private warningsWithNonMatchingWarnDatesAreRemoved(Lorg/apache/http/HttpResponse;)V
+    .registers 19
+    .param p1, "response"    # Lorg/apache/http/HttpResponse;
+
+    .prologue
+    .line 103
+    const/4 v10, 0x0
+
+    .line 105
+    .local v10, "responseDate":Ljava/util/Date;
+    :try_start_1
+    const-string v14, "Date"
+
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v14}, Lorg/apache/http/HttpResponse;->getFirstHeader(Ljava/lang/String;)Lorg/apache/http/Header;
+
+    move-result-object v14
+
+    invoke-interface {v14}, Lorg/apache/http/Header;->getValue()Ljava/lang/String;
+
+    move-result-object v14
+
+    invoke-static {v14}, Lorg/apache/http/impl/cookie/DateUtils;->parseDate(Ljava/lang/String;)Ljava/util/Date;
+    :try_end_10
+    .catch Lorg/apache/http/impl/cookie/DateParseException; {:try_start_1 .. :try_end_10} :catch_7b
+
+    move-result-object v10
+
+    .line 110
+    :goto_11
+    if-nez v10, :cond_14
+
+    .line 134
+    :cond_13
+    return-void
+
+    .line 112
+    :cond_14
+    const-string v14, "Warning"
+
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v14}, Lorg/apache/http/HttpResponse;->getHeaders(Ljava/lang/String;)[Lorg/apache/http/Header;
+
+    move-result-object v12
+
+    .line 114
+    .local v12, "warningHeaders":[Lorg/apache/http/Header;
+    if-eqz v12, :cond_13
+
+    array-length v14, v12
+
+    if-eqz v14, :cond_13
+
+    .line 116
+    new-instance v9, Ljava/util/ArrayList;
+
+    invoke-direct {v9}, Ljava/util/ArrayList;-><init>()V
+
+    .line 117
+    .local v9, "newWarningHeaders":Ljava/util/List;, "Ljava/util/List<Lorg/apache/http/Header;>;"
+    const/4 v8, 0x0
+
+    .line 118
+    .local v8, "modified":Z
+    move-object v1, v12
+
+    .local v1, "arr$":[Lorg/apache/http/Header;
+    array-length v6, v1
+
+    .local v6, "len$":I
+    const/4 v4, 0x0
+
+    .local v4, "i$":I
+    move v5, v4
+
+    .end local v1    # "arr$":[Lorg/apache/http/Header;
+    .end local v4    # "i$":I
+    .end local v6    # "len$":I
+    .local v5, "i$":I
+    :goto_2b
+    if-ge v5, v6, :cond_5c
+
+    aget-object v3, v1, v5
+
+    .line 119
+    .local v3, "h":Lorg/apache/http/Header;
+    invoke-static {v3}, Lorg/apache/http/impl/client/cache/WarningValue;->getWarningValues(Lorg/apache/http/Header;)[Lorg/apache/http/impl/client/cache/WarningValue;
+
+    move-result-object v2
+
+    .local v2, "arr$":[Lorg/apache/http/impl/client/cache/WarningValue;
+    array-length v7, v2
+
+    .local v7, "len$":I
+    const/4 v4, 0x0
+
+    .end local v5    # "i$":I
+    .restart local v4    # "i$":I
+    :goto_35
+    if-ge v4, v7, :cond_58
+
+    aget-object v13, v2, v4
+
+    .line 120
+    .local v13, "wv":Lorg/apache/http/impl/client/cache/WarningValue;
+    invoke-virtual {v13}, Lorg/apache/http/impl/client/cache/WarningValue;->getWarnDate()Ljava/util/Date;
+
+    move-result-object v11
+
+    .line 121
+    .local v11, "warnDate":Ljava/util/Date;
+    if-eqz v11, :cond_45
+
+    invoke-virtual {v11, v10}, Ljava/util/Date;->equals(Ljava/lang/Object;)Z
+
+    move-result v14
+
+    if-eqz v14, :cond_56
+
+    .line 122
+    :cond_45
+    new-instance v14, Lorg/apache/http/message/BasicHeader;
+
+    const-string v15, "Warning"
+
+    invoke-virtual {v13}, Lorg/apache/http/impl/client/cache/WarningValue;->toString()Ljava/lang/String;
+
+    move-result-object v16
+
+    invoke-direct/range {v14 .. v16}, Lorg/apache/http/message/BasicHeader;-><init>(Ljava/lang/String;Ljava/lang/String;)V
+
+    invoke-interface {v9, v14}, Ljava/util/List;->add(Ljava/lang/Object;)Z
+
+    .line 119
+    :goto_53
+    add-int/lit8 v4, v4, 0x1
+
+    goto :goto_35
+
+    .line 124
+    :cond_56
+    const/4 v8, 0x1
+
+    goto :goto_53
+
+    .line 118
+    .end local v11    # "warnDate":Ljava/util/Date;
+    .end local v13    # "wv":Lorg/apache/http/impl/client/cache/WarningValue;
+    :cond_58
+    add-int/lit8 v4, v5, 0x1
+
+    move v5, v4
+
+    .end local v4    # "i$":I
+    .restart local v5    # "i$":I
+    goto :goto_2b
+
+    .line 128
+    .end local v2    # "arr$":[Lorg/apache/http/impl/client/cache/WarningValue;
+    .end local v3    # "h":Lorg/apache/http/Header;
+    .end local v7    # "len$":I
+    :cond_5c
+    if-eqz v8, :cond_13
+
+    .line 129
+    const-string v14, "Warning"
+
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v14}, Lorg/apache/http/HttpResponse;->removeHeaders(Ljava/lang/String;)V
+
+    .line 130
+    invoke-interface {v9}, Ljava/util/List;->iterator()Ljava/util/Iterator;
+
+    move-result-object v4
+
+    .end local v5    # "i$":I
+    .local v4, "i$":Ljava/util/Iterator;
+    :goto_69
+    invoke-interface {v4}, Ljava/util/Iterator;->hasNext()Z
+
+    move-result v14
+
+    if-eqz v14, :cond_13
+
+    invoke-interface {v4}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v3
+
+    check-cast v3, Lorg/apache/http/Header;
+
+    .line 131
+    .restart local v3    # "h":Lorg/apache/http/Header;
+    move-object/from16 v0, p1
+
+    invoke-interface {v0, v3}, Lorg/apache/http/HttpResponse;->addHeader(Lorg/apache/http/Header;)V
+
+    goto :goto_69
+
+    .line 106
+    .end local v3    # "h":Lorg/apache/http/Header;
+    .end local v4    # "i$":Ljava/util/Iterator;
+    .end local v8    # "modified":Z
+    .end local v9    # "newWarningHeaders":Ljava/util/List;, "Ljava/util/List<Lorg/apache/http/Header;>;"
+    .end local v12    # "warningHeaders":[Lorg/apache/http/Header;
+    :catch_7b
+    move-exception v14
+
+    goto :goto_11
+.end method
+
+
+# virtual methods
+.method public ensureProtocolCompliance(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+    .registers 4
+    .param p1, "request"    # Lorg/apache/http/HttpRequest;
+    .param p2, "response"    # Lorg/apache/http/HttpResponse;
+    .annotation system Ldalvik/annotation/Throws;
+        value = {
+            Ljava/io/IOException;
+        }
+    .end annotation
+
+    .prologue
+    .line 74
+    invoke-direct {p0, p1, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->backendResponseMustNotHaveBody(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)Z
+
+    move-result v0
+
+    if-eqz v0, :cond_d
+
+    .line 75
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->consumeBody(Lorg/apache/http/HttpResponse;)V
+
+    .line 76
+    const/4 v0, 0x0
+
+    invoke-interface {p2, v0}, Lorg/apache/http/HttpResponse;->setEntity(Lorg/apache/http/HttpEntity;)V
+
+    .line 79
+    :cond_d
+    invoke-direct {p0, p1, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->requestDidNotExpect100ContinueButResponseIsOne(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+
+    .line 81
+    invoke-direct {p0, p1, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->transferEncodingIsNotReturnedTo1_0Client(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+
+    .line 83
+    invoke-direct {p0, p1, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->ensurePartialContentIsNotSentToAClientThatDidNotRequestIt(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+
+    .line 85
+    invoke-direct {p0, p1, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->ensure200ForOPTIONSRequestWithNoBodyHasContentLengthZero(Lorg/apache/http/HttpRequest;Lorg/apache/http/HttpResponse;)V
+
+    .line 87
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->ensure206ContainsDateHeader(Lorg/apache/http/HttpResponse;)V
+
+    .line 89
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->ensure304DoesNotContainExtraEntityHeaders(Lorg/apache/http/HttpResponse;)V
+
+    .line 91
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->identityIsNotUsedInContentEncoding(Lorg/apache/http/HttpResponse;)V
+
+    .line 93
+    invoke-direct {p0, p2}, Lorg/apache/http/impl/client/cache/ResponseProtocolCompliance;->warningsWithNonMatchingWarnDatesAreRemoved(Lorg/apache/http/HttpResponse;)V
+
+    .line 94
+    return-void
+.end method

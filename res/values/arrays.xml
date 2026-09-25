@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string-array name="qt_sources"><item>https://download.qt-project.org/ministro/android/qt5/5.3.0</item></string-array>
+<array name="bundled_libs" />
+<string-array name="bundled_in_lib"><item>libqoffscreen.so:plugins/platforms/libqoffscreen.so</item><item>libqminimalegl.so:plugins/platforms/libqminimalegl.so</item><item>libqeglfs.so:plugins/platforms/libqeglfs.so</item><item>libqtforandroid.so:plugins/platforms/android/libqtforandroid.so</item><item>libqminimal.so:plugins/platforms/libqminimal.so</item><item>libqjpeg.so:plugins/imageformats/libqjpeg.so</item><item>libqtiff.so:plugins/imageformats/libqtiff.so</item><item>libqico.so:plugins/imageformats/libqico.so</item><item>libqmng.so:plugins/imageformats/libqmng.so</item><item>libqgif.so:plugins/imageformats/libqgif.so</item><item>libqsvg.so:plugins/imageformats/libqsvg.so</item><item>libqtga.so:plugins/imageformats/libqtga.so</item><item>libqwbmp.so:plugins/imageformats/libqwbmp.so</item><item>libqgenericbearer.so:plugins/bearer/libqgenericbearer.so</item><item>libqtaccessiblequick.so:plugins/accessible/libqtaccessiblequick.so</item><item>libqtaccessiblewidgets.so:plugins/accessible/libqtaccessiblewidgets.so</item></string-array>
+<array name="bundled_in_assets" />
+<string-array name="qt_libs"><item>gnustl_shared</item><item>Qt5Core</item><item>Qt5Gui</item><item>Qt5Network</item><item>Qt5Script</item><item>Qt5Xml</item><item>Qt5Widgets</item><item>Qt5OpenGL</item><item>Qt5PrintSupport</item><item>Qt5ScriptTools</item><item>Qt5Svg</item></string-array>
+</resources>

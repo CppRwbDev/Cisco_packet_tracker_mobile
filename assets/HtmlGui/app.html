@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<!-- Auto Generated with Sencha Architect -->
+<!-- Modifications to this file will be overwritten. -->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="DIAGMARK" />
+    <title>HtmlGui</title>
+    <style>
+        #ptDiagOverlay { position: fixed; left: 0; top: 0; z-index: 2147483647;
+            background: rgba(0,0,0,0.82); color: #0f0; font: 9px/1.3 monospace;
+            padding: 3px; max-width: 100%; white-space: pre; pointer-events: none;
+            border: 1px solid #0ff; }
+    </style>
+    <script>
+    (function () {
+        function f(v) { return typeof v === "number" ? Math.round(v * 10) / 10 : String(v); }
+        function mq(q) { try { return window.matchMedia(q).matches ? "MOS" : "yo'q" } catch (e) { return "err" } }
+        function bc() { try { return HtmlGui.view.contextualMenus.BaseButtonCircle } catch (e) { return null } }
+        function build() {
+            var B = bc(), L = [];
+            L.push("== PT DIAG ==");
+            L.push("inner: " + window.innerWidth + "x" + window.innerHeight + "  docEl: " + document.documentElement.clientWidth + "x" + document.documentElement.clientHeight);
+            L.push("screen: " + screen.width + "x" + screen.height + "  avail: " + screen.availWidth + "x" + screen.availHeight);
+            L.push("screen.innerW/H: " + String(screen.innerWidth) + " / " + String(screen.innerHeight));
+            L.push("DPR: " + window.devicePixelRatio + "  visualViewport: " + (window.visualViewport ? f(window.visualViewport.width) + "x" + f(window.visualViewport.height) + " scale " + f(window.visualViewport.scale) : "n/a"));
+            L.push("orient: " + (screen.orientation ? screen.orientation.type + "/" + screen.orientation.angle + "deg" : String(window.orientation)));
+            L.push("viewportMeta: " + (document.querySelector('meta[name=viewport]') ? (document.querySelector('meta[name=viewport]').getAttribute("content") || "(bo'sh)") : "YO'Q"));
+            L.push("matchMedia 17cm/20cm/30cm/640px/480px: " + mq("(max-width: 17cm)") + " / " + mq("(max-width: 20cm)") + " / " + mq("(max-width: 30cm)") + " / " + mq("(max-width: 640px)") + " / " + mq("(max-width: 480px)"));
+            L.push("min(w,h)/2 = " + f(Math.min(window.innerWidth, window.innerHeight) / 2) + "   max(w,h) = " + f(Math.max(window.innerWidth, window.innerHeight)));
+            if (B) {
+                L.push("--- BaseButtonCircle live ---");
+                try { L.push("scaleForMediaSize: " + f(B.prototype.scaleForMediaSize.call({}))) } catch (e) { L.push("scale err") }
+                try {
+                    var inst = new B();
+                    L.push("getLargestScreenDim: " + f(inst.getLargestScreenDim()) + "   (getlch farq: x" + f(inst.getLargestScreenDim() / Math.max(window.innerWidth, window.innerHeight)) + ")");
+                    L.push("getSmallestDim: " + f(inst.getSmallestDim()));
+                    var c = inst.getScreenCenter();
+                    L.push("getScreenCenter: x" + f(c.x) + " y" + f(c.y));
+                    L.push("getButtonSize: " + f(inst.getButtonSize()) + "   textOn=" + f(inst.buttonSizeTextOn()) + " textUnder=" + f(inst.buttonSizeTextUnder()));
+                    L.push("outerSize(500): " + f(inst.m_defaultOuter));
+                    var g = inst.getCenter(inst.maxCircleRadPercent());
+                    var e = inst.getButtonSize() / 2;
+                    L.push("getCenter(0.95): r=" + f(g.r) + "  r+btn/2=" + f(g.r + e) + "  chegara=" + f(inst.getSmallestDim()) + (g.r + e > inst.getSmallestDim() ? "  >>> CHIQDI +" + f(g.r + e - inst.getSmallestDim()) : "  sig'adi"));
+                } catch (e2) { L.push("instance err: " + e2.message) }
+            } else { L.push("BaseButtonCircle: topilmadi (boshqa joyda?)") }
+            return L.join("\n");
+        }
+        function mount() {
+            var d = document.createElement("div");
+            d.id = "ptDiagOverlay";
+            document.documentElement.appendChild(d);
+            d.textContent = build();
+            setInterval(function () { if (d.parentNode) { d.textContent = build() } }, 700);
+        }
+        if (document.readyState === "loading") { document.addEventListener("DOMContentLoaded", mount) } else { mount() }
+    })();
+    </script>
+    <script>
+        var Ext = Ext || {};
+        Ext.theme = {
+            name: "Default"
+        };
+    </script>
+    <script src="touch/sencha-touch-all.js"></script>
+    <script src="scripts/stacktrace.js"></script>
+    <script src="scripts/ipc.js"></script>
+    <script src="scripts/ipcHelpers.js"></script>
+    <script src="scripts/Utils.js"></script>
+    <link rel="stylesheet" href="resources/css/main.css" id="main_css">
+    <link rel="stylesheet" href="resources/css/app.css" id="app">
+    <link rel="stylesheet" href="resources/css/pdu_info_view.css" id="pdu_info_view">
+    <link rel="stylesheet" href="resources/css/shapes_contextual.css" id="shapes_contextual">
+    <link rel="stylesheet" href="resources/css/end_devices_contextual.css" id="end_devices_contextual">
+    <link rel="stylesheet" href="resources/css/router_contextual.css" id="router_contextual">
+    <link rel="stylesheet" href="resources/css/security_contextual.css" id="router_contextual">
+    <link rel="stylesheet" href="resources/css/switch_contextual.css" id="switch_contextual">
+    <link rel="stylesheet" href="resources/css/wireless_contextual.css" id="wireless_contextual">
+    <link rel="stylesheet" href="resources/css/cloud_contextual.css" id="cloud_contextual">
+    <link rel="stylesheet" href="resources/css/device_configuration_contextual.css" id="device_configuration_contextual">
+    <link rel="stylesheet" href="resources/css/hub_contextual.css" id="hub_contextual">
+    <link rel="stylesheet" href="resources/css/multiuser_contextual.css" id="multiuser_contextual">
+    <link rel="stylesheet" href="resources/css/notes_contextual.css" id="notes_contextual">
+    <link rel="stylesheet" href="resources/css/basic_contextual_button.css" id="basic_contextual_button">
+    <link rel="stylesheet" href="resources/css/custom_devices_contextual.css" id="custom_devices_contextual">
+    <link rel="stylesheet" href="resources/css/shape_handling_contextual.css" id="shape_handling_contextual">
+    <link rel="stylesheet" href="resources/css/sim_contextual.css" id="sim_contextual">
+    <link rel="stylesheet" href="resources/css/multiselect_contextual.css" id="multiselect_contextual">
+    <link rel="stylesheet" href="resources/css/ports.css" id="ports">
+    <link rel="stylesheet" href="resources/css/cables_contextual.css" id="cables_contextual">
+    <link rel="stylesheet" href="resources/css/file_options_contextual.css" id="file_options_contextual">
+    <link rel="stylesheet" href="resources/css/desktop.css" id="desktop">
+    <link rel="stylesheet" href="resources/css/device_table_css.css" id="device_table_css">
+    <link rel="stylesheet" href="resources/css/cluster_contextual.css" id="cluster_contextual">
+    <link rel="stylesheet" href="resources/css/startup_css.css" id="startup_css">
+    <link rel="stylesheet" href="resources/css/actionbar_css.css" id="actionbar_css">
+    <link rel="stylesheet" href="resources/css/TouchTreeGrid.css">
+    <link rel="stylesheet" href="resources/css/treegriddemo.css">
+    <link rel="stylesheet" href="resources/css/commandline.css" id="commandline_css">
+    <link rel="stylesheet" href="resources/css/guidance.css">
+    <link rel="stylesheet" href="resources/css/scenario.css">
+
+         <!-- Android 4.4 chrome browser shows scroll bars on the workspace. Disable the scrollbars. -->
+         <style type="text/css">
+         body { overflow: hidden !important;}
+         </style>
+
+        <script type="text/javascript" src="app.js"></script> 
+</head>
+</html>

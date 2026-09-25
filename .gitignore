@@ -1,0 +1,11 @@
+*.apk
+*.apks
+*.idsig
+.tmp/
+tmp/
+.opencode/
+Thumbs.db
+.DS_Store
+desktop.ini
+*.swp
+*~
