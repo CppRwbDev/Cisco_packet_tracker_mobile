@@ -19,6 +19,7 @@ Ushbu hujjat loyihada qilingan barcha o'zgarishlarni, ularning sabablarini, aniq
 | 4 | Radial (contextual) menyuni barmoq nuqtasida chiqarish + ekranga sig'dirish | ✅ |
 | 5 | Radial menyu o'lchamini sozlash (60%–140%, jonli preview + slider) | ✅ |
 | 6 | Diagnostika overlay (`DIAG` tugmasi, sukut bo'yicha yopiq) | ✅ |
+| 7 | Physical view: pastki modul ro'yxati va tavsif bloki moslashuvi (v12) | ✅ |
 
 ---
 
@@ -198,9 +199,44 @@ Barchasi `baza × media(0.6/1) × scale` ko'rinishida `!important` bilan yozilad
 
 ---
 
-## 6. Build va imzolash
+## 6. Physical view: pastki modul paneli va tavsif bloki (v12)
 
-### 6.1 Dex patch (startup login)
+### Muammo
+PC0 kabi qurilmalarning **Physical** ko'rinishida pastki modul ro'yxati
+(`Linksys-WMP300N`, `PT-HOST-NM-1CE`, ...) ekranning pastki chetidan chiqib ketardi
+va tavsif (matn) bloki bilan ustma-ust tushardi. Sabab — `PhysicalView.loadModuleScroller()`
+dagi qat'iy piksel hisoblari:
+
+- `modulePanel` balandligi `80*(c-0.05)` → telefonda **36px**, ichidagi dataview esa
+  qat'iy **85px** → ro'yxat panel ostidan 49px chiqib ketadi.
+- `modulePanel.top = viewRect.bottom - 25 - actionBar` → panelning pastki qismi
+  ekran/action bar ostida qoladi.
+- `moduleInfo` balandligi **35px**, matn uzun bo'lsa kesiladi va panelga tegib turadi.
+- Plitka (`itemTpl`) matni o'ralmasdi (`white-space` yo'q), uzun modul nomlari kesilardi.
+
+### Yechim (`app/view/physical/PhysicalView.js`)
+
+- **Ekran o'lchamiga bog'liq hisoblash:** `vh = this.element.getHeight()`,
+  `vw = this.element.getWidth()`; `phone = max-width:17cm`.
+- **Pastki zona (modullar):** panel pastdan `actionBar` balandligi ustiga mahkamlanadi
+  (`panelTop = vh - barH - panelH`), `panelH = tileH + 8` (telefonda ~65px,
+  kattaroq ekranda ~100px). Dataview `flex:1` va `height:panelH` — panel bilan bir xil,
+  ortiqcha chiqish yo'q. Gorizontal skroll saqlanadi.
+- **O'rta zona (tavsif):** `moduleInfo` panel ustida (`panelTop - infoH - 4`),
+  balandligi `min(120, vh*0.24)` (kamida 0), vertikal skroll (`scrollable:true`),
+  `font-size` 11/13px, `overflow-wrap` — matn kesilmaydi va panelga tushmaydi.
+- **Plitkalar:** qat'iy `tileW` (96/120px) va `tileH`, `box-sizing:border-box`,
+  nom 2 qatorgacha o'raladi (`word-break:break-word`), rasm balandligi ekranga
+  qarab 25/50px.
+- **Xavfsizlik:** `selectModuleInToolbar` / `deselectModuleSelection` null-guard va
+  scroll xatolariga chidamli qilindi.
+
+Natijada ekran 3 zonaga bo'linadi: yuqorida qurilma (scene), o'rtada tavsif,
+pastda action bar ustida modullar paneli.
+
+
+
+### 7.1 Dex patch (startup login)
 
 Repo'dagi `smali/` daraxti to'liq emas (6474 klass; original dex'da 6864).
 Shuning uchun **original `classes.dex` dan yangidan disassemble** qilinadi:
@@ -214,7 +250,7 @@ java -jar smali.jar assemble smali_orig -o classes_patched.dex
 Tekshiruv (round-trip): `string_ids` 54480 vs 54482 (2 ta ishlatilmagan satr),
 qolgan barcha sanoqlar mos; dex versiyasi `035`; hajm `7767108` bayt.
 
-### 6.2 APK yig'ish
+### 7.2 APK yig'ish
 
 Baza APK nusxalanadi va quyidagi fayllar almashtiriladi
 (`META-INF/*.SF|*.RSA|*.DSA|*.EC`, `MANIFEST.MF` olib tashlanadi):
@@ -230,7 +266,7 @@ assets/HtmlGui/app/store/InitialSettings.js
 classes.dex                      ← classes_patched.dex
 ```
 
-### 6.3 Imzolash
+### 7.3 Imzolash
 
 Original APK AOSP **testkey** bilan imzolangan (`SHA-256 a40da80a…`), shu sababli
 yangilanish eski o'rnatilgan ilova ustiga muammosiz o'rnatiladi.
@@ -247,7 +283,7 @@ java -jar uber.jar --apks final_unsigned.apk \
 
 ---
 
-## 7. Build tarixi (APK'lar)
+## 8. Build tarixi (APK'lar)
 
 APK'lar repoga qo'shilmaydi (`.gitignore`: `*.apk`, `*.apks`, `*.idsig`).
 Ular `/storage/emulated/0/Download/` da saqlanadi.
@@ -262,11 +298,12 @@ Ular `/storage/emulated/0/Download/` da saqlanadi.
 | v8 | `PacketTracer_v8.apk` | + menyu o'lchami (radius) |
 | v9 | `PacketTracer_v9.apk` | + tugma CSS masshtabi, slider oynasi + preview |
 | v10 | `PacketTracer_v10.apk` | `Done` bosilishini to'sish tuzatildi |
-| **v11** | **`PacketTracer_v11.apk`** | **slider qiymati tuzatildi (yakuniy)** |
+| v11 | `PacketTracer_v11.apk` | slider qiymati tuzatildi (Circle Menu Size yakuniy) |
+| **v12** | **`PacketTracer_v12.apk`** | **physical view: modul paneli + tavsif bloki moslashuvi** |
 
 ---
 
-## 8. O'zgartirilgan fayllar ro'yxati
+## 9. O'zgartirilgan fayllar ro'yxati
 
 ```
 assets/HtmlGui/app.html
@@ -276,12 +313,13 @@ assets/HtmlGui/app/view/contextualMenus/BaseButtonCircle.js
 assets/HtmlGui/app/view/options/ProjectOptionsDialog_UI.js
 assets/HtmlGui/app/view/options/ProjectOptionsDialog.js
 assets/HtmlGui/app/store/InitialSettings.js
+assets/HtmlGui/app/view/physical/PhysicalView.js
 smali/org/qtproject/qt5/android/bindings/PacketTracerFrontEndBridge$1.smali
 ```
 
 ---
 
-## 9. Ma'lum cheklovlar / eslatmalar
+## 10. Ma'lum cheklovlar / eslatmalar
 
 - `contextMenuScale` **yangi ochilgan** menyuga qo'llanadi; ochiq turgan menyu o'lchami keyingi ochilishda yangilanadi.
 - Kichik ekranlarda radius `0.98 × min(ekran)/2` bilan avtomatik cheklanadi (140% ham ekrandan chiqmaydi).
