@@ -59,6 +59,56 @@
 
         <script type="text/javascript" src="app.js"></script> 
 
+<!-- ==== RWB RECREATED loading (brand + progress) ==== -->
+<style type="text/css">
+#rwbSplash{position:fixed;top:0;left:0;right:0;bottom:0;z-index:2147483600;background:#000;-webkit-user-select:none;user-select:none;transition:opacity .4s ease}
+#rwbSplash .rwbCenter{position:absolute;top:50%;left:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);text-align:center;width:80%}
+#rwbSplash .rwbTitle{color:#39ff14;font:bold 44px/1.1 Arial,Helvetica,sans-serif;letter-spacing:6px;white-space:nowrap;text-shadow:0 0 18px rgba(57,255,20,.55)}
+#rwbSplash .rwbBarWrap{margin:22px auto 0;width:340px;max-width:70vw;height:16px;border:2px solid #39ff14;border-radius:9px;background:rgba(57,255,20,.08);overflow:hidden;box-shadow:0 0 12px rgba(57,255,20,.35)}
+#rwbSplash .rwbBarFill{height:100%;width:0%;background:linear-gradient(90deg,#0b6b0b,#39ff14);box-shadow:0 0 10px rgba(57,255,20,.85);transition:width .08s linear}
+#rwbSplash .rwbPct{margin-top:10px;color:#39ff14;font:bold 20px Arial,Helvetica,sans-serif;letter-spacing:2px}
+#rwbSplash .rwbDots::after{content:'';animation:rwbDots 1.2s steps(4,end) infinite}
+@keyframes rwbDots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
+#rwbSplash .rwbBy{position:absolute;right:16px;bottom:12px;color:#39ff14;font:bold 17px Arial,Helvetica,sans-serif;letter-spacing:1px;opacity:.92}
+#rwbSplash.rwbHide{opacity:0;pointer-events:none}
+#rwbSplash.rwbGone{display:none !important}
+</style>
+<div id="rwbSplash">
+  <div class="rwbCenter">
+    <div class="rwbTitle">RWB RECREATED</div>
+    <div class="rwbBarWrap"><div class="rwbBarFill" id="rwbBarFill"></div></div>
+    <div class="rwbPct"><span id="rwbPct">0%</span> <span class="rwbDots"></span></div>
+  </div>
+  <div class="rwbBy">by Saidjon</div>
+</div>
+<script type="text/javascript">
+(function(){
+  var s=document.getElementById('rwbSplash');
+  if(!s){return;}
+  var fill=document.getElementById('rwbBarFill'), pct=document.getElementById('rwbPct');
+  var DUR=10000, t0=null, raf=null, done=false;
+  function hide(){
+    if(done){return;}
+    done=true;
+    if(raf){try{cancelAnimationFrame(raf);}catch(e){}}
+    try{s.className='rwbHide';}catch(e){}
+    setTimeout(function(){try{s.className='rwbGone';}catch(e){}},450);
+  }
+  function step(ts){
+    if(t0===null){t0=ts;}
+    var p=Math.min(1,(ts-t0)/DUR);
+    var v=Math.round(p*100);
+    if(fill){fill.style.width=v+'%';}
+    if(pct){pct.textContent=v+'%';}
+    if(p<1){raf=requestAnimationFrame(step);}else{hide();}
+  }
+  raf=requestAnimationFrame(step);
+  function tapHide(){hide();}
+  s.addEventListener('click',tapHide,false);
+  s.addEventListener('touchstart',tapHide,false);
+})();
+</script>
+
 <!-- ==== PT DIAG (vaqtinchalik diagnostika) ==== -->
 <style type="text/css">
 #ptDiagToggle{position:fixed;top:2px;right:2px;z-index:2147483647;background:#003b00;color:#39ff39;border:1px solid #39ff39;font:bold 11px monospace;padding:3px 7px;border-radius:3px}
@@ -66,8 +116,8 @@
 #ptDiagErr{position:fixed;bottom:0;left:0;right:0;z-index:2147483646;background:rgba(45,0,0,.88);color:#ff6666;font:10px/1.35 monospace;padding:4px 6px;max-height:40%;overflow:hidden;white-space:pre-wrap;pointer-events:none}
 #ptDiagBox.ptDiagHide,#ptDiagErr.ptDiagHide{display:none}
 </style>
-<div id="ptDiagBox"></div>
-<div id="ptDiagErr"></div>
+<div id="ptDiagBox" class="ptDiagHide"></div>
+<div id="ptDiagErr" class="ptDiagHide"></div>
 <button id="ptDiagToggle" type="button">DIAG</button>
 <script type="text/javascript">
 (function(){
@@ -167,6 +217,199 @@
     }
     box.textContent=L.join('\n');
   },500);
+})();
+</script>
+<!-- ==== Circle Menu Size (live preview + slider) ==== -->
+<style id="ptMenuScaleStyle" type="text/css"></style>
+<script type="text/javascript">
+(function(){
+  function mediaScale(){try{return (window.matchMedia&&window.matchMedia('(max-width: 17cm)').matches)?0.6:1;}catch(e){return 1;}}
+  function clamp(v){v=parseFloat(v);if(!(v>0)){v=1;}if(v<0.4){v=0.4;}if(v>1.4){v=1.4;}return v;}
+  function px(base,v,m){return (Math.round(base*m*v*100)/100)+'px';}
+
+  window.ptMenuScale=1;
+  window.ptMenuScaleClamp=clamp;
+
+  window.ptApplyMenuScale=function(v){
+    v=clamp(v);
+    window.ptMenuScale=v;
+    var m=mediaScale();
+    var css=
+      '.basic_contextual_button,.basic_contextual_button:active{width:'+px(70,v,m)+'!important;height:'+px(70,v,m)+'!important;background-size:contain!important}'+
+      '.basic_contextual_button_text_under,.basic_contextual_button_text_under:active{width:'+px(55,v,1)+'!important;height:'+px(55,v,1)+'!important;background-size:contain!important}'+
+      '.workspace_button_inner,.workspace_button_inner:active{width:'+px(60,v,m)+'!important;height:'+px(60,v,m)+'!important;background-size:contain!important}'+
+      '.device_button_inner,.device_button_inner:active{width:'+px(55,v,m)+'!important;height:'+px(55,v,m)+'!important;background-size:contain!important}'+
+      '.basic_contextual_button_panel{width:'+px(90,v,1)+'!important}';
+    var el=document.getElementById('ptMenuScaleStyle');
+    if(!el){el=document.createElement('style');el.id='ptMenuScaleStyle';(document.head||document.documentElement).appendChild(el);}
+    el.textContent=css;
+  };
+
+  (function(){
+    var n=0;
+    var iv=setInterval(function(){
+      n++;
+      try{
+        if(window.AppSettings&&window.AppSettings.getString){
+          clearInterval(iv);
+          var v=parseFloat(AppSettings.getString('contextMenuScale','1.00'));
+          window.ptApplyMenuScale(isNaN(v)?1:v);
+          return;
+        }
+      }catch(e){}
+      if(n>300){clearInterval(iv);}
+    },100);
+  })();
+
+  function ptBuildPreview(){
+    try{if(window.ptPreviewMenu){window.ptPreviewMenu.destroyContainer();}}catch(e){}
+    window.ptPreviewMenu=null;
+    try{
+      if(!(window.HtmlGui&&HtmlGui.view&&HtmlGui.view.contextualMenus&&HtmlGui.view.contextualMenus.BaseLayeredButtonCircle)){return;}
+      if(!HtmlGui.view.contextualMenus.PtPreviewCircle){
+        Ext.define('HtmlGui.view.contextualMenus.PtPreviewCircle',{
+          extend:'HtmlGui.view.contextualMenus.BaseLayeredButtonCircle',
+          m_addToWorkspace:false,
+          m_addToMenuManager:false,
+          m_popInputMode:false,
+          m_allowCreateDrawArea:false,
+          layer0ID:function(){return 'ptPvLayer0';},
+          layer1ID:function(){return 'ptPvLayer1';},
+          layer2ID:function(){return 'ptPvLayer2';},
+          setupCloseOnTap:function(){},
+          setupBackOnTap:function(){},
+          handleButtonPress:function(){}
+        });
+      }
+      var items=[];
+      try{
+        var st=Ext.data.StoreManager.lookup('DeviceContextButtonStore');
+        if(st&&st.data&&st.data.items&&st.data.items.length){
+          for(var i=0;i<st.data.items.length&&items.length<6;i++){
+            var it=st.data.items[i];
+            items.push({css:it.get('CSS'),ID:it.get('ID'),text:'',triggerMethod:'touchend'});
+          }
+        }
+      }catch(e){}
+      if(!items.length){
+        items=[
+          {css:'device_connect_contextual',ID:'pvLink',text:'',triggerMethod:'touchend'},
+          {css:'device_cli_contextual',ID:'pvCli',text:'',triggerMethod:'touchend'},
+          {css:'device_desktop_contextual',ID:'pvDesk',text:'',triggerMethod:'touchend'},
+          {css:'device_rename_contextual',ID:'pvRename',text:'',triggerMethod:'touchend'},
+          {css:'device_inspect_contextual',ID:'pvInspect',text:'',triggerMethod:'touchend'},
+          {css:'device_delete_contextual',ID:'pvDelete',text:'',triggerMethod:'touchend'}
+        ];
+      }
+      var pv=Ext.create('HtmlGui.view.contextualMenus.PtPreviewCircle',{});
+      pv.m_parent={clearStoredContextualMenus:function(){},popContextualMenu:function(){},updateView:function(){},inputModePop:function(){}};
+      pv.setLayerCssValuesUse(pv.layer1ID(),'device_button_inner',55);
+      pv.setButtonOffsetFromEdge(0.35);
+      pv.generateButtonData=function(){return items;};
+      try{pv.loadAllLayer1Buttons('DeviceContextButtonStore');}catch(e){try{pv.destroyContainer();}catch(e2){}return;}
+      window.ptPreviewMenu=pv;
+      try{
+        var c=pv.getContainer();
+        if(c&&c.element){c.element.setStyle('z-index','10');c.element.setStyle('pointer-events','none');}
+        var l2=pv.getLayer(pv.layer2ID());
+        if(l2){l2.setHidden(false);}
+      }catch(e){}
+    }catch(e){}
+  }
+
+  window.ptOpenCircleMenuSizeDialog=function(onDone){
+    try{if(window.ptMenuSizeDialog){window.ptMenuSizeDialog.destroy();}}catch(e){}
+    window.ptMenuSizeDialog=null;
+    var cur=1;
+    try{cur=clamp(AppSettings.getString('contextMenuScale','1.00'));}catch(e){}
+    var val=Math.round(cur*100);
+
+    function done(){
+      try{if(window.ptPreviewMenu){window.ptPreviewMenu.destroyContainer();}}catch(e){}
+      window.ptPreviewMenu=null;
+      try{if(window.ptMenuSizeDialog){window.ptMenuSizeDialog.destroy();}}catch(e){}
+      window.ptMenuSizeDialog=null;
+      try{window.ptApplyMenuScale(parseFloat(AppSettings.getString('contextMenuScale','1.00'))||1);}catch(e){}
+      if(typeof onDone==='function'){Ext.defer(function(){try{onDone();}catch(e){}},60);}
+    }
+
+    ptBuildPreview();
+
+    function ptSliderVal(args,me){
+      var v=null;
+      try{
+        var g=(me&&me.getValue)?me.getValue():null;
+        if(g!=null){
+          if(typeof g==='object'&&g.length!=null){v=parseFloat(g[0]);}
+          else{v=parseFloat(g);}
+        }
+      }catch(e){}
+      if(v==null||isNaN(v)){
+        for(var i=0;i<args.length;i++){
+          if(typeof args[i]==='number'&&!isNaN(args[i])){v=args[i];break;}
+        }
+      }
+      return v;
+    }
+
+    function ptApplyVal(raw,persist){
+      if(raw==null||isNaN(raw)){return;}
+      var s=clamp(raw/100);
+      window.ptApplyMenuScale(s);
+      var lb=Ext.getCmp('ptMenuSizeValue');
+      if(lb){lb.setHtml('<b style="font-size:16px;color:#fff">'+Math.round(s*100)+'%</b>');}
+      if(persist){
+        try{AppSettings.setString('contextMenuScale',(Math.round(s*100)/100).toFixed(2));}catch(e){}
+        ptBuildPreview();
+        try{var pe=panel.element;if(pe&&pe.dom&&pe.dom.parentNode){pe.dom.parentNode.appendChild(pe.dom);}}catch(e){}
+      }
+    }
+
+    var slider=Ext.create('Ext.field.Slider',{
+      id:'ptMenuSizeSlider',
+      label:'Circle Menu Size',
+      labelWidth:'45%',
+      minValue:60,
+      maxValue:140,
+      step:5,
+      value:val,
+      flex:1,
+      listeners:{
+        drag:function(){ptApplyVal(ptSliderVal(arguments,arguments[0]),false);},
+        change:function(){ptApplyVal(ptSliderVal(arguments,arguments[0]),true);}
+      }
+    });
+
+    var panel=Ext.create('Ext.Panel',{
+      id:'ptMenuSizeDialog',
+      floating:true,
+      modal:false,
+      hideOnMaskTap:false,
+      left:'8%',
+      width:'84%',
+      bottom:10,
+      height:150,
+      cls:'ptMenuSizeDialog',
+      layout:{type:'vbox',align:'stretch'},
+      padding:8,
+      items:[
+        {xtype:'label',html:'<b style="color:#fff;font-size:16px">Circle Menu Size</b>&nbsp;&nbsp;<span style="color:#bfbfbf;font-size:12px">preview is shown in the centre</span>',style:'margin:0 0 4px 2px'},
+        {xtype:'container',layout:'hbox',items:[
+          slider,
+          {xtype:'label',id:'ptMenuSizeValue',html:'<b style="font-size:16px;color:#fff">'+val+'%</b>',style:'text-align:center;width:64px;margin-top:6px'}
+        ]},
+        {xtype:'container',layout:'hbox',items:[
+          {xtype:'spacer'},
+          {xtype:'button',text:'Reset 100%',handler:function(){var s=Ext.getCmp('ptMenuSizeSlider');if(s){s.setValue(100);}}},
+          {xtype:'button',text:'Done',handler:done}
+        ]}
+      ]
+    });
+    Ext.Viewport.add(panel);
+    panel.show();
+    window.ptMenuSizeDialog=panel;
+    try{if(panel.element){panel.element.setStyle('z-index','2147483000');}}catch(e){}
+  };
 })();
 </script>
 </head>

@@ -591,3 +591,13 @@ Ya'ni `m_buttonTextOnButton = false` bo'lgan radial menyularda JS 36px ni hisobl
 Ko'rsatiladigan ma'lumotlar: `inner*`, `documentElement.client*`, `screen.*` (jumladan mavjud bo'lmagan `screen.innerWidth/Height`), `devicePixelRatio`, `visualViewport` + `scale`, `orientation`, `viewportMeta` kontenti, `matchMedia` natijalari (17cm/20cm/30cm/640px/480px), `min(w,h)/2`, `max(w,h)` va — ilova yuklangan bo'lsa — **`BaseButtonCircle` ning jonli qiymatlari**: `scaleForMediaSize()`, `getLargestScreenDim()`, `getSmallestDim()`, `getScreenCenter()`, `getButtonSize()`, `m_defaultOuter`, `getCenter(0.95)` va `r + btn/2` vs chegara taqqoslash natijasi.
 
 **O'chirish:** `assets/HtmlGui/app.html.orig` ni `app.html` ga qaytarish.
+
+---
+
+## 13. Amalga oshirilgan modifikatsiyalar
+
+Ushbu tahlil asosida qilingan barcha amaliy o'zgarishlar (login olib tashlash, save limit, brending, radial menyu pozitsiyasi va **Circle Menu Size** sozlamasi), shuningdek build/imzolash tartibi va build tarixi alohida hujjatda:
+
+**`MODIFICATIONS.md`** — to'liq ro'yxat, patch nuqtalari va versiyalar.
+
+Qisqa ro'yxat: startup NetAcad login (smali patch), guest 3-save limit, `RWB RECREATED` splash, radial menyuning barmoq nuqtasida chiqishi, menyu o'lchami 60–140% (slider + jonli preview), `DIAG` diagnostika overlay.
